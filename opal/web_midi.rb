@@ -1,7 +1,13 @@
 module WebMidi
   Navigator = Native(`navigator`)
 
+  def self.support?
+    Native(`navigator.requestMIDIAccess !== undefined`)
+  end
+
   def self.request_access(options = {}, &block)
+    raise "WebMIDI not supported" unless support?
+
     success = lambda do |access|
       block.call Access.new(access)
     end
